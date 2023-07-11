@@ -23,7 +23,7 @@ const Navbar = async () => {
       <div className="flexCenter gap-4">
         {session?.user ? (
           <>
-            {session.user.image && (
+            {session?.user?.image && (
               <Image
                 src={session.user.image}
                 width={40}
@@ -32,7 +32,6 @@ const Navbar = async () => {
                 alt={session.user.name}
               />
             )}
-
             <Link href="/create-project">Share Your Work</Link>
           </>
         ) : (
