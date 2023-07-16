@@ -1,26 +1,65 @@
 "use client";
 import { SessionInterface } from "@/common.types";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import FormField from "./FormField";
 import { categoryFilters } from "@/constants";
 import CustomMenu from "./CustomMenu";
+import Button from "./Button";
+
 type Props = {
   type: string;
   session: SessionInterface;
 };
-const form = {
-  image: "",
-  title: "",
-  description: "",
-  liveSiteUrl: "",
-  gitHubUrl: "",
-  category: "",
-};
+
 const ProjectForm = ({ type, session }: Props) => {
-  const handleFormSubmit = (e: React.FormEvent) => {};
-  const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {};
-  const handleStateChange = (fieldName: string, value: string) => {};
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    image: "",
+    liveSiteUrl: "",
+    gitHubUrl: "",
+    category: "",
+  });
+
+  const handleStateChange = (fieldName: string, value: string) => {
+    setForm((prevState) => ({ ...prevState, [fieldName]: value }));
+  };
+
+  const handleChangeImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.includes("image")) {
+      return alert("Please upload image file");
+    }
+
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      const result = reader.result as string;
+      handleStateChange("image", result);
+    };
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    setIsSubmitting(true);
+
+    try {
+      if (type === "create") {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <form
       action="submit"
@@ -48,7 +87,7 @@ const ProjectForm = ({ type, session }: Props) => {
           />
         )}
       </div>
-      {}
+
       <FormField
         title="Title"
         state={form.title}
@@ -82,7 +121,16 @@ const ProjectForm = ({ type, session }: Props) => {
         setState={(value) => handleStateChange("category", value)}
       />
       <div className="flexStart w-full">
-        <button>Create</button>
+        <Button
+          title={
+            isSubmitting
+              ? `${type === "create" ? "Creating" : "Editing"}`
+              : `${type === "create" ? "Create" : "Edit"}`
+          }
+          type="submit"
+          leftIcon={isSubmitting ? "" : "/plus.svg"}
+          isSubmitting={isSubmitting}
+        />
       </div>
     </form>
   );
