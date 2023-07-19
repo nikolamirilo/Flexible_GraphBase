@@ -7,6 +7,10 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_SECRET 
 });
 
+export async function GET(){
+    return NextResponse.json({message:"Upload Images using POST request"}, {status: 200})
+}
+
 export async function POST (request: Request){
     const {path} = await request.json()
 
